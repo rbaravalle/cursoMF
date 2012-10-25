@@ -29,7 +29,7 @@ Adequate image descriptors are fundamental in image classification and object re
 
 In this context, the identification of materials poses a significant challenge, since typical (geometric and/or differential) feature extraction methods are not robust enough. Texture features based on Fourier or wavelet transforms, on the other hand, do withstand geometric and illumination variations, but tend to require a high amount of descriptors to perform adequately. 
 
-Recently, the theory of fractal sets has shown to provide local image features that are both robust and low-dimensional. In this work we apply a multifractal feature extraction technique for bread crumb classification based on colour scans of slices of different bread types. Preliminary results show that fractal based classification is able to distinguish different bread crumbs with very high accuracy.
+Recently, the theory of fractal sets has shown to provide local image features that are both robust and low-dimensional. In this work we apply a multifractal feature extraction technique for bread crumb classification based on colour scans of slices of different bread types. Preliminary results show that fractal based classification is able to distinguish different bread crumbs with high accuracy.
 \end{abstract}
 
 \section{Introduction}
@@ -47,17 +47,23 @@ This method was introduced in \cite{Tel89} and it is useful to obtain generalize
 
 \begin{equation}
 D_{q} = \lim_{R\rightarrow0}{\frac{1}{q-1} \frac{\log \bigg \lbrack\frac{1}{N}\displaystyle \sum_{i=1}^{N}{p_{i}^{q-1}}\bigg \rbrack}{\log R}},
+\label{eqn:eqn1}
 \end{equation}
 
-where $p_{i}$ is the number of points in the box of radius $R$ centered at the point $i$. An average is made over the $N$ points.
-In practice we perform a linear fit between the values of $D_{q}$ and $R$ for $R$ in $[R_{min}, R_{max}]$. The latter value will be determined based on the accuracy of the classification.
+where $p_{i}$ is the number of points in the box of radius $R$ centered at the point $i$. An average is made over the $N$ points. Equation (\ref{eqn:eqn1}) can also be stated as
+
+\begin{equation}
+D_{q} = \lim_{R\rightarrow0}{D_{q}(R)}.
+\end{equation}
+
+In practice we perform a linear fit between the values of $D_{q}(R)$ and $R$ for $R$ in $[R_{min}, R_{max}]$. The latter value will be determined based on the accuracy of the classification.
 
 In this work, we apply this method to obtain a feature vector, setting different values of $q$ for each image, so then we can use it in classification tasks.
 
 \section{Materials and Methodology}
 
 \subsection{Image acquisition}
-Twenty images of four different bread types ({\em lactal}, {\em baguette}, {\em salvado} and {\em sandwich}), counting two hundred images, were obtained using an electric slicer. The images were digitalised using an HP PSC 1210 scanner and they were saved in TIFF format. Images showed a resolution of $380 \times 380$ pixels (the maximum possible area for the four bread types) and $350$ dpi ($1$ pixel $= 0.00527 mm^{2}$). Then the images were converted to grey scale ($8$ bits). In addition, $20$ images of each bread type were acquired with a digital camera, using the same spatial resolution, counting $80$ images. The illumination conditions of these images were different from that of the scanner in order to test for the robustness of the method. In Fig.~\ref{fig:camera} four examples of bread images from the camera are shown. We also employed one hundred randomly selected images from the CalTech101~\cite{FeiFei04} dataset in order to test the method's performance with non-bread images. In Fig.~\ref{fig:nonbread} four examples of non-bread images from this dataset are shown. 
+Twenty images of four different bread types ({\em lactal}, {\em baguette}, {\em salvado} and {\em sandwich}), counting $80$ images, were obtained using an electric slicer. The images were digitalised using an HP PSC 1210 scanner and they were saved in TIFF format. Images showed a resolution of $380 \times 380$ pixels (the maximum possible area for the four bread types) and $350$ dpi ($1$ pixel $= 0.00527 mm^{2}$). Then the images were converted to grey scale ($8$ bits). In addition, $20$ images of each bread type were acquired with a digital camera, using the same spatial resolution, counting $80$ images. The illumination conditions of these images were different from that of the scanner in order to test for the robustness of the method. In Fig.~\ref{fig:camera} four examples of bread images from the camera are shown. We also employed one hundred randomly selected images from the CalTech101~\cite{FeiFei04} dataset in order to test the method's performance with non-bread images. In Fig.~\ref{fig:nonbread} four examples of non-bread images from this dataset are shown. 
 
 \begin{figure*}[htb]
 \centering
@@ -102,9 +108,9 @@ Following the ideas presented in \cite{Gonzales2008}, the mentioned multifractal
 \section{Results}
 
 \subsection{Classification}
-{\em Support Vector Machines} (SVM)~\cite{Boser92} were used to perform the classification, using the {\em libsvm}~\cite{Chang2011} implementation. The method of {\em k-fold cross validation} was employed in order to validate the results with $k = 4$, {\em i.e.}, $75\%$ of samples are used as training and $25\%$ as testing (then switching the training and testing samples). Based on the randomness in the method's point selection, we made an {\em ensemble} of $10$ trained SVMs models, in which each SVM prediction {\em votes} for one bread type. Then the most appearing class (the most voted class for each image) is selected in each case.
+{\em Support Vector Machines} (SVM)~\cite{Boser92} were used to perform the classification, using the {\em libsvm}~\cite{Chang2011} implementation. The method of {\em k-fold cross validation} was employed in order to validate the results with $k = 4$, {\em i.e.}, $75\%$ of samples are used as training and $25\%$ as testing (then switching the training and testing samples). The cross validation is applied only to scanner samples.
 
-A robust bread crumb classifier could be used to make the classification process independent of the image capturing condition. In each case, we performed a test in order to show the accuracy of the classifiers when there is a capturing condition mismatch between training and testing samples, {\em i.e.}, when training with scanner samples and testing with camera samples. Table \ref{table:tableFirstTest} show classification results for the classifier when varying different parameters of the method.
+A robust bread crumb classifier could be used to make the classification process independent of the image capturing condition. In each case, we performed a test in order to show the accuracy of the classifiers when there is a capturing condition mismatch between training and testing samples, {\em i.e.}, when training with scanner samples and testing with camera samples. Based on the randomness in the method's point selection, we made an {\em ensemble} of $10$ trained SVMs models, in which each SVM prediction {\em votes} for one bread type. Then the most appearing class (the most voted class for each image) is selected in each case. In the case of cross validation, we made an average of the percentages obtained. Table \ref{table:tableFirstTest} shows classification results for the classifier when varying different parameters of the method.
 
 \begin{table}[htb]
 \centering
@@ -116,9 +122,9 @@ A robust bread crumb classifier could be used to make the classification process
     \hline
     \# Points & $900$ & $900$ & $900$ & $2500$ & $900$\\
     \hline
-    Cross Validation  & $75,5\%$ & $76,2\%$ & $77,1\%$ & $79,8\%$ & \\
+    Cross Validation  & $75,5\%$ & $76,2\%$ & $77,1\%$ & $79,8\%$ & $77,4\%$\\
     \hline
-    Robustness & $46\%$ & $44\%$ & $49\%$ & $49\%$ & \\
+    Robustness & $46\%$ & $44\%$ & $49\%$ & $49\%$ & $47\%$ \\
     \hline
 \end{tabular}
 \caption{Results obtained with different parameters}
@@ -164,7 +170,7 @@ A robust bread crumb classifier could be used to make the classification process
 %\label{table:tableThirdTest}
 %\end{table}
 
-In Table \ref{table:ConfusionMatrixFractal} the confusion matrix of the data using the classifier is shown. The matrix shows that the classifier tends to label most of the data to the non-bread class. It also shows that the {\em baguette} bread type is successfully discriminated.
+In Table \ref{table:ConfusionMatrixFractal} the confusion matrix of the data using the classifier in the robustness test is shown. The matrix shows that the classifier tends to label most of the data to the non-bread class. It also shows that the {\em baguette} bread type is successfully discriminated.
 \begin{table}[htb]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -187,7 +193,7 @@ In Table \ref{table:ConfusionMatrixFractal} the confusion matrix of the data usi
 \label{table:ConfusionMatrixFractal}
 \end{table}
 
-In each test, the robustness accuracy is also shown. It can be seen that the values for the cross validation and for the robustness tests are mantained when varying the parameters of the method. In a previous work \cite{Baravalle2012b}, we found similar results for robustness ($50\%$) but a higher accuracy in the cross validation of the scanned images ($93.2\%$), using the singularity multifractal spectrum. We conclude that the sandbox multifractal method performs similarly to the singularity multifractal spectrum.
+It can be seen that the values for the cross validation and for the robustness tests are similar when varying the parameters of the method. In a previous work \cite{Baravalle2012b}, we found similar results for robustness ($50\%$) but a higher accuracy in the cross validation of the scanned images ($93.2\%$), using the singularity multifractal spectrum. We conclude that the sandbox multifractal method performs similarly to the singularity multifractal spectrum.
 
 \section{Conclusions}
 The use of multifractal features in bread crumb texture classification showed good performance. The sandbox multifractal spectrum demonstrated to be accurate enough to perform a classification of different bread types. A combination of both multifractal methods could lead to a stronger classifier. The use of boosting could improve the robustness of the method.
