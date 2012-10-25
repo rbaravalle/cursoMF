@@ -2,7 +2,6 @@
 %
 \usepackage{graphicx}
 \usepackage{amsmath,amsfonts}
-%\usepackage{fullpage}
 \usepackage{url}
 \usepackage{subfig}
 \usepackage{ amssymb }
@@ -43,14 +42,14 @@ In this work we propose the utilisation of the generalized multifractal dimensio
 Some elements in nature show fractal features or auto similarity. The fractal dimension is an exponent which relates the statistical auto similarity of the object at different scales. On the one hand, deterministic fractals are characterized by the same FD at all scales. They are called {\em monofractals} (for instance, Koch Curve, Sierpinsky triangle). On the other hand, {\em multifractals} \cite{Mandelbrot89} are characterized by a set of FDs depending on the scale. It is assumed that these structures are composed by different fractals coexisting simultaneously. In a previous work \cite{Baravalle2012}, it has been shown, using the Box Dimension and the Korcak Dimension \cite{Imre11}, that the bread crumb texture presents multifractal features. As a consequence, multifractal features are considered in the present work.
 
 \subsection{Sandbox Method}
-This method was introduced in \cite{Tel89} and it is useful to obtain generalized multifractal dimentions. If working with images, the method performs a binarization on it, and then, $N$ points belonging to the structure ({\em i.e.}, regions with white pixels) should be randomly selected, counting for each point the number of white pixels inside a box of diameter $R$, centered at the point. The generalized sandbox dimention of order $q$ is obtained as \cite{Bert94}
+This method was introduced in \cite{Tel89} and it is useful to obtain generalized multifractal dimensions. If working with images, the method performs a binarisation on it, and then, $N$ points belonging to the structure ({\em i.e.}, regions with white pixels) should be randomly selected, counting for each point the number of white pixels inside a box of diameter $R$, centred at the point. The generalized sandbox dimension of order $q$ is obtained as \cite{Bert94}
 
 \begin{equation}
 D_{q} = \lim_{R\rightarrow0}{\frac{1}{q-1} \frac{\log \bigg \lbrack\frac{1}{N}\displaystyle \sum_{i=1}^{N}{p_{i}^{q-1}}\bigg \rbrack}{\log R}},
 \label{eqn:eqn1}
 \end{equation}
 
-where $p_{i}$ is the number of points in the box of radius $R$ centered at the point $i$. An average is made over the $N$ points. Equation (\ref{eqn:eqn1}) can also be stated as
+where $p_{i}$ is the number of points in the box of radius $R$ centred at the point $i$. An average is made over the $N$ points. Equation (\ref{eqn:eqn1}) can also be stated as
 
 \begin{equation}
 D_{q} = \lim_{R\rightarrow0}{D_{q}(R)}.
@@ -103,14 +102,14 @@ For the binarisation of the images, the algorithm presented in \cite{White83} wa
 
 \subsection{Feature vectors}
 
-Following the ideas presented in \cite{Gonzales2008}, the mentioned multifractal features were obtained for each image. The code of the algorithms for the computation of the sandbox method was written and run in python. The actual implementation of the method takes approximately two seconds per image to run, and does not depend in the image size (since it depends in the number of points used in the average).
+Following the ideas presented in \cite{Gonzales2008}, the mentioned multifractal features were obtained for each image. The code of the algorithms for the computation of the sandbox method was written and run in python. The actual implementation of the method takes approximately two seconds per image to run, and depends in the number of selected points, the maximum window size and the number of fractal dimensions, but not on the image size.
 
 \section{Results}
 
 \subsection{Classification}
 {\em Support Vector Machines} (SVM)~\cite{Boser92} were used to perform the classification, using the {\em libsvm}~\cite{Chang2011} implementation. The method of {\em k-fold cross validation} was employed in order to validate the results with $k = 4$, {\em i.e.}, $75\%$ of samples are used as training and $25\%$ as testing (then switching the training and testing samples). The cross validation is applied only to scanner samples.
 
-A robust bread crumb classifier could be used to make the classification process independent of the image capturing condition. In each case, we performed a test in order to show the accuracy of the classifiers when there is a capturing condition mismatch between training and testing samples, {\em i.e.}, when training with scanner samples and testing with camera samples. Based on the randomness in the method's point selection, we made an {\em ensemble} of $10$ trained SVMs models, in which each SVM prediction {\em votes} for one bread type. Then the most appearing class (the most voted class for each image) is selected in each case. In the case of cross validation, we made an average of the percentages obtained. Table \ref{table:tableFirstTest} shows classification results for the classifier when varying different parameters of the method.
+A robust bread crumb classifier could be used to make the classification process independent of the image capturing condition. In each case, we performed a test in order to show the accuracy of the classifiers when there is a capturing condition mismatch between training and testing samples, {\em i.e.}, when training with scanner samples and testing with camera samples. Based on the randomness in the method's point selection, we made an {\em ensemble} of $10$ trained SVMs models, in which each SVM prediction {\em votes} for one bread type. Then the most appearing class (the most voted class for each image) is selected in each case. In the case of cross validation, we made an average of the percentages obtained. Table \ref{table:tableFirstTest} shows classification results when varying different parameters of the method.
 
 \begin{table}[htb]
 \centering
@@ -131,44 +130,6 @@ A robust bread crumb classifier could be used to make the classification process
 \label{table:tableFirstTest}
 \end{table}
 
-%\begin{table}[htb]
-%\centering
-%\begin{tabular}{|c|c|c|c|c|}
-%    \hline
-%    \# Fractal Dimensions & $14$ & $14$ & $14$ & $14$ \\
-%    \hline
-%    $R_{max}$ & $10$ & $18$ & $30$ & $40$ \\
-%    \hline
-%    \# Points & $1500$ & $1500$ & $1500$ & $1500$ \\
-%    \hline
-%   Accuracy  & $78\%$ & $73\%$ & $77\%$ & $77\%$ \\
-%    \hline
-%    Robustness & $32\%$ & $51\%$ & $\textbf{56\%}$ & $49\%$\\
-%    \hline
-%\end{tabular}
-%\caption{Results obtained with different $R_{max}$}
-%\label{table:tableSecondTest}
-%\end{table}
-
-
-%\begin{table}[htb]
-%\centering
-%\begin{tabular}{|c|c|c|c|c|c|c|c|}
-%    \hline
-%    \# Fractal Dimensions & $14$ & $14$ & $14$ & $14$ & $14$ & $14$ & $14$ \\
-%    \hline
-%    $R_{max}$ & $30$ & $30$ & $30$ & $30$ & $30$ & $30$ & $30$ \\
-%    \hline
-%    \# Points & $100$ & $300$ & $900$ & $1500$ & $2500$ & $3500$ & $4900$\\
-%    \hline
-%    Accuracy  & $64\%$ & $74\%$ & $77\%$ & $77\%$ & $80\%$ & $85\%$ & $79\%$ \\
-%    \hline
-%    Robustness & $40\%$ & $45\%$ & $54\%$ & $\textbf{56\%}$ & $44\%$ & $54\%$ & $\textbf{56\%}$\\
-%    \hline
-%\end{tabular}
-%\caption{Results obtained varying the amount of points}
-%\label{table:tableThirdTest}
-%\end{table}
 
 In Table \ref{table:ConfusionMatrixFractal} the confusion matrix of the data using the classifier in the robustness test is shown. The matrix shows that the classifier tends to label most of the data to the non-bread class. It also shows that the {\em baguette} bread type is successfully discriminated.
 \begin{table}[htb]
